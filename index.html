@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="generator" content="HTML Tidy for HTML5 for Mac OS X version 5.1.2">
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <meta name="author" content="Charles L. Yost">
+    <title>Ansible</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="reveal.js/css/reveal.css">
+    <style type="text/css">
+    code{white-space: pre;}
+    </style>
+    <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme"><!-- If the query includes 'print-pdf', include the PDF print sheet -->
+
+    <script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'reveal.js/css/print/pdf.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+    </script><!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+<style>   
+.reveal .slides section .fragment.current-visible.current-fragment.collapsable-fragment { display: initial; } 
+.reveal .slides section .fragment.current-visible.collapsable-fragment { display: none; } 
+h1.subtitle { font-size: 2em; } 
+.code { text-align: left; } 
+.reveal dd > p { margin: 0; } 
+figure, img { border:none !important; outline: none !important; } 
+</style>  
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1 class="title">Ansible</h1>
+                <h1 class="subtitle">Getting in over our heads</h1>
+                <h2 class="author">Charles L. Yost</h2>
+                <h3 class="date">2015-11</h3>
+            </section>
+            <section id="description" class="slide level1">
+                <h1>Description</h1>
+                <p>A 45 minute deep dive into Ansible. The inner workings, all the possiblities, and how to really get into some trouble with it. Jam-packed with examples, this talk is intended to be a living cookbook/cheatsheet for when Ansible has you over a barrel, or it's your turn in one.</p>
+            </section>
+            <section id="speaker-bio" class="slide level1">
+                <h1>Speaker Bio</h1>
+                <p>Charles Yost is currently a Security Developer at Binary Defense Systems. He has worked in the IT industry for over 10 years in a wide variety of roles including: Printer Technician, VoIP Systems Administrator, .Net Developer, and Web Developer. Throughout life his number one passion has been learning new skills. He can often be found researching a topic, attempting to keep up with the quickly evolving field of technology. Charles enjoys teaching and talking to others about technology. He is a member of NEOISF, and attends as many InfoSec conferences as he can justify with his wife.</p>
+            </section>
+            <section id="contact" class="slide level1">
+                <h1>Contact</h1>
+                <p>Twitter: @CHARLESLYOST</p>
+                <p>GitHub: Yoshi325</p>
+                <p>This Talk:<br>
+                <a href="https://github.com/Yoshi325/talks-ansible-3" class="uri">https://github.com/Yoshi325/talks-ansible-3</a></p>
+            </section>
+            <section id="watch-that-first-step-its-a-doozy" class="slide level1">
+                <h1>"Watch that first step, it's a doozy!"</h1>
+                <figure>
+                    <img src="images/66C538AB-7D9C-4791-99D8-F359978DBABD.jpg" alt="">
+                </figure>
+            </section>
+            <section id="the-ansible-playbook-command" class="slide level1">
+                <h1>The ansible-playbook command</h1>
+            </section>
+            <section id="the-tags-feature" class="slide level1">
+                <h1>The tags feature</h1>
+                <p>For running a specific part of a playbook, rather than the whole thing. Both plays and tasks support the “tags:” attribute.</p>
+                <h2 id="for-overriding-tag-selection-always">For overriding tag selection: always</h2>
+                <p><code>ansible-playbook playbook.yml --tags "always"</code></p>
+                <h2 id="for-selecting-via-meta-tagged-untagged-and-all">For selecting via meta: ‘tagged’, ‘untagged’ and ‘all’</h2>
+                <p><code>ansible-playbook playbook.yml --tags "tagged"</code></p>
+                <p><code>ansible-playbook playbook.yml --tags "untagged"</code></p>
+                <p><code>ansible-playbook playbook.yml --tags "all"</code></p>
+                <h2 id="for-including-multiple-tags">For including multiple tags:</h2>
+                <p><code>ansible-playbook playbook.yml --tags "configuration,packages"</code></p>
+                <h2 id="for-excluding-tags">For excluding tags:</h2>
+                <p>"only run plays and tasks whose tags do not match these values" <code>`ansible-playbook playbook.yml --skip-tags=SKIP_TAGS</code>`</p>
+                <p><a href="http://stackoverflow.com/questions/23945201/how-to-run-only-one-task-in-ansible-playbook" class="uri">http://stackoverflow.com/questions/23945201/how-to-run-only-one-task-in-ansible-playbook</a> <a href="http://docs.ansible.com/ansible/playbooks_tags.html" class="uri">http://docs.ansible.com/ansible/playbooks_tags.html</a></p>
+            </section>
+            <section id="the-list-options" class="slide level1">
+                <h1>The list options</h1>
+                <p>"outputs a list of matching hosts; does not execute anything else" <code>ansible-playbook playbook.yml --list-hosts</code></p>
+                <p>"list all available tags" <code>ansible-playbook playbook.yml --list-tags</code></p>
+                <p>"list all tasks that would be executed" <code>ansible-playbook playbook.yml --list-tasks</code></p>
+            </section>
+            <section id="the-start-task-at-option" class="slide level1">
+                <h1>The start task at option</h1>
+                <p>"start the playbook at the task matching this name"</p>
+                <p>ansible-playbook playbook.yml --start-at-task=START_AT</p>
+            </section>
+            <section id="the-syntax-check-option" class="slide level1">
+                <h1>The syntax check option</h1>
+                <p>"perform a syntax check on the playbook, but do not execute it"</p>
+                <p>ansible-playbook playbook.yml --syntax-check</p>
+            </section>
+            <section id="the-step-option" class="slide level1">
+                <h1>The step option</h1>
+                <p>"one-step-at-a-time: confirm each task before running" ansible-playbook playbook.yml --step</p>
+            </section>
+            <section id="resources-and-credits" class="slide level1">
+                <h1>Resources and Credits</h1>
+            </section>
+        </div>
+    </div>
+    <script src="reveal.js/lib/js/head.min.js">
+    </script> 
+    <script src="reveal.js/js/reveal.js">
+    </script> 
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,         // Display controls in the bottom right corner
+        progress: true,         // Display a presentation progress bar
+        history: true,          // Push each slide change to the browser history
+        center: false,                       // Vertical centering of slides
+        maxScale: 1.5,                  // Bounds for smallest/largest possible content scale
+        slideNumber: false,                // Display the page number of the current slide
+        theme: 'black', // available themes are in /css/theme
+        transition: 'fade', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+    //          { src: 'reveal.js/plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; }, }
+    //          { src: 'reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+    ]});
+    </script>
+</body>
+</html>
