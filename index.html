@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="generator" content="pandoc">
     <meta name="author" content="Charles L. Yost">
-    <title>Ansible</title>
+    <title>Ansible (3)</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -39,7 +39,7 @@ figure, img { border:none !important; outline: none !important; }
     <div class="reveal">
         <div class="slides">
             <section>
-                <h1 class="title">Ansible</h1>
+                <h1 class="title">Ansible (3)</h1>
                 <h1 class="subtitle">Getting in over our heads</h1>
                 <h2 class="author">Charles L. Yost</h2>
                 <h3 class="date">2015-11</h3>
@@ -67,44 +67,67 @@ figure, img { border:none !important; outline: none !important; }
             </section>
             <section id="the-ansible-playbook-command" class="slide level1">
                 <h1>The ansible-playbook command</h1>
+                <p><code>ansible-playbook playbook.yml [OPTIONS]</code></p>
+                <aside class="notes">
+                    <p>playbook.yml goes right after the command a less often encountered way of handing this</p>
+                </aside>
             </section>
-            <section id="the-tags-feature" class="slide level1">
-                <h1>The tags feature</h1>
-                <p>For running a specific part of a playbook, rather than the whole thing. Both plays and tasks support the “tags:” attribute.</p>
-                <h2 id="for-overriding-tag-selection-always">For overriding tag selection: always</h2>
-                <p><code>ansible-playbook playbook.yml --tags "always"</code></p>
-                <h2 id="for-selecting-via-meta-tagged-untagged-and-all">For selecting via meta: ‘tagged’, ‘untagged’ and ‘all’</h2>
-                <p><code>ansible-playbook playbook.yml --tags "tagged"</code></p>
-                <p><code>ansible-playbook playbook.yml --tags "untagged"</code></p>
-                <p><code>ansible-playbook playbook.yml --tags "all"</code></p>
-                <h2 id="for-including-multiple-tags">For including multiple tags:</h2>
-                <p><code>ansible-playbook playbook.yml --tags "configuration,packages"</code></p>
-                <h2 id="for-excluding-tags">For excluding tags:</h2>
-                <p>"only run plays and tasks whose tags do not match these values" <code>`ansible-playbook playbook.yml --skip-tags=SKIP_TAGS</code>`</p>
-                <p><a href="http://stackoverflow.com/questions/23945201/how-to-run-only-one-task-in-ansible-playbook" class="uri">http://stackoverflow.com/questions/23945201/how-to-run-only-one-task-in-ansible-playbook</a> <a href="http://docs.ansible.com/ansible/playbooks_tags.html" class="uri">http://docs.ansible.com/ansible/playbooks_tags.html</a></p>
+            <section id="the-tags-option" class="slide level1">
+                <h1>The tags option</h1>
+                <div class="fragment current-visible collapsable-fragment">
+                    For running a specific part or parts of a playbook,<br>
+                    rather than the whole thing.
+                </div>
+                <div class="fragment current-visible collapsable-fragment">
+                    <p>Both plays and tasks support the “tags:” attribute.</p>
+                </div>
+                <div class="fragment current-visible collapsable-fragment">
+                    <p><strong>For overriding tag selection: always</strong> <code>ansible-playbook playbook.yml --tags "always"</code></p>
+                </div>
+                <div class="fragment current-visible collapsable-fragment">
+                    <p><strong>For selecting via meta: ‘tagged’, ‘untagged’ and ‘all’</strong> <code>ansible-playbook playbook.yml --tags "tagged"</code> <code>ansible-playbook playbook.yml --tags "untagged"</code> <code>ansible-playbook playbook.yml --tags "all"</code></p>
+                </div>
+                <div class="fragment current-visible collapsable-fragment">
+                    <p><strong>For including multiple tags:</strong> <code>ansible-playbook playbook.yml --tags "tag1,tag2"</code></p>
+                </div>
+                <div class="fragment current-visible collapsable-fragment">
+                    <p><strong>For excluding tags:</strong> <code>ansible-playbook playbook.yml --skip-tags=tag3</code></p>
+                </div>
             </section>
             <section id="the-list-options" class="slide level1">
                 <h1>The list options</h1>
-                <p>"outputs a list of matching hosts; does not execute anything else" <code>ansible-playbook playbook.yml --list-hosts</code></p>
-                <p>"list all available tags" <code>ansible-playbook playbook.yml --list-tags</code></p>
-                <p>"list all tasks that would be executed" <code>ansible-playbook playbook.yml --list-tasks</code></p>
+                <div class="fragment current-visible collapsable-fragment">
+                    <p>For listing out parts of the playbook. It is very useful to check your playbook and hosts files before using them.</p>
+                </div>
+                <div class="fragment current-visible collapsable-fragment">
+                    <p><strong>For listing hosts:</strong> <code>ansible-playbook playbook.yml --list-hosts</code></p>
+                </div>
+                <div class="fragment current-visible collapsable-fragment">
+                    <p><strong>For listing all available tags:</strong> <code>ansible-playbook playbook.yml --list-tags</code></p>
+                </div>
+                <div class="fragment current-visible collapsable-fragment">
+                    <p><strong>For listing all tasks that would be executed:</strong> <code>ansible-playbook playbook.yml --list-tasks</code></p>
+                </div>
             </section>
-            <section id="the-start-task-at-option" class="slide level1">
-                <h1>The start task at option</h1>
-                <p>"start the playbook at the task matching this name"</p>
-                <p>ansible-playbook playbook.yml --start-at-task=START_AT</p>
-            </section>
-            <section id="the-syntax-check-option" class="slide level1">
-                <h1>The syntax check option</h1>
-                <p>"perform a syntax check on the playbook, but do not execute it"</p>
-                <p>ansible-playbook playbook.yml --syntax-check</p>
-            </section>
-            <section id="the-step-option" class="slide level1">
-                <h1>The step option</h1>
-                <p>"one-step-at-a-time: confirm each task before running" ansible-playbook playbook.yml --step</p>
+            <section id="the-task-options" class="slide level1">
+                <h1>The task options</h1>
+                <div class="fragment current-visible collapsable-fragment">
+                    <p><strong>To start your playbook at a task (by name):</strong> <code>ansible-playbook playbook.yml --start-at-task="task1"</code></p>
+                </div>
+                <div class="fragment current-visible collapsable-fragment">
+                    <p><strong>To perform a syntax check on your playbook:</strong> <code>ansible-playbook playbook.yml --syntax-check</code></p>
+                </div>
+                <div class="fragment current-visible collapsable-fragment">
+                    <p><strong>To step though the tasks in your playbook:</strong></p>
+                    <p><code>ansible-playbook playbook.yml --step</code></p>
+                </div>
+                <aside class="notes">
+                    <p>step prompts for confirmation before running a task</p>
+                </aside>
             </section>
             <section id="resources-and-credits" class="slide level1">
                 <h1>Resources and Credits</h1>
+                <p><a href="https://gist.github.com/marktheunissen/2979474" class="uri">https://gist.github.com/marktheunissen/2979474</a> <a href="http://stackoverflow.com/questions/23945201/how-to-run-only-one-task-in-ansible-playbook" class="uri">http://stackoverflow.com/questions/23945201/how-to-run-only-one-task-in-ansible-playbook</a> <a href="http://docs.ansible.com/ansible/playbooks_tags.html" class="uri">http://docs.ansible.com/ansible/playbooks_tags.html</a></p>
             </section>
         </div>
     </div>

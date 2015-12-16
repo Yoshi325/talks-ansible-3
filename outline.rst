@@ -1,6 +1,6 @@
-=======
-Ansible
-=======
+===========
+Ansible (3)
+===========
 
 -------------------------
 Getting in over our heads
@@ -39,82 +39,196 @@ GitHub: Yoshi325
 
 .. figure:: images/66C538AB-7D9C-4791-99D8-F359978DBABD.jpg
 
+
 The ansible-playbook command
 ============================
+``ansible-playbook playbook.yml [OPTIONS]``
 
+.. class:: notes
 
-The tags feature
-================
-For running a specific part of a playbook, rather than the whole thing. Both plays and tasks support the “tags:” attribute.
+  playbook.yml goes right after the command
+  a less often encountered way of handing this
+  in my experiance, you can also put the playbook at the end
 
-For overriding tag selection: always
-------------------------------------
+The tags option
+===============
 
-``ansible-playbook playbook.yml --tags "always"``
+.. class:: fragment current-visible collapsable-fragment
 
-For selecting via meta:  ‘tagged’, ‘untagged’ and ‘all’
--------------------------------------------------------
+  .. raw:: html
 
-``ansible-playbook playbook.yml --tags "tagged"``
+    For running a specific part or parts of a playbook, <br/>
+    rather than the whole thing.
 
-``ansible-playbook playbook.yml --tags "untagged"``
+.. class:: fragment current-visible collapsable-fragment
 
-``ansible-playbook playbook.yml --tags "all"``
+  Both plays and tasks support the “tags:” attribute.
 
-For including multiple tags:
-----------------------------
+.. class:: fragment current-visible collapsable-fragment
 
-``ansible-playbook playbook.yml --tags "configuration,packages"``
+  **For overriding tag selection: always**
+  ``ansible-playbook playbook.yml --tags "always"``
 
-For excluding tags:
--------------------
+.. class:: fragment current-visible collapsable-fragment
 
-"only run plays and tasks whose tags do not match these values"
-```ansible-playbook playbook.yml --skip-tags=SKIP_TAGS```
+  **For selecting via meta:  ‘tagged’, ‘untagged’ and ‘all’**
+  ``ansible-playbook playbook.yml --tags "tagged"``
+  ``ansible-playbook playbook.yml --tags "untagged"``
+  ``ansible-playbook playbook.yml --tags "all"``
 
+.. class:: fragment current-visible collapsable-fragment
 
+  **For including multiple tags:**
+  ``ansible-playbook playbook.yml --tags "tag1,tag2"``
 
+.. class:: fragment current-visible collapsable-fragment
 
+  **For excluding tags:**
+  ``ansible-playbook playbook.yml --skip-tags=tag3``
 
 
 The list options
 ================
-"outputs a list of matching hosts; does not execute anything else"
-``ansible-playbook playbook.yml --list-hosts``
 
-"list all available tags"
-``ansible-playbook playbook.yml --list-tags``
+.. class:: fragment current-visible collapsable-fragment
 
-"list all tasks that would be executed"
-``ansible-playbook playbook.yml --list-tasks``
+  For listing out parts of the playbook. It is very useful to check your playbook and hosts files before using them.
 
+.. class:: fragment current-visible collapsable-fragment
 
-The start task at option
-========================
+  **For listing hosts:**
+  ``ansible-playbook playbook.yml --list-hosts``
 
-"start the playbook at the task matching this name"
+.. class:: fragment current-visible collapsable-fragment
 
-ansible-playbook playbook.yml --start-at-task=START_AT
+  **For listing all available tags:**
+  ``ansible-playbook playbook.yml --list-tags``
 
+.. class:: fragment current-visible collapsable-fragment
 
-The syntax check option
-=======================
-
-"perform a syntax check on the playbook, but do not execute it"
-
-ansible-playbook playbook.yml --syntax-check
+  **For listing all tasks that would be executed:**
+  ``ansible-playbook playbook.yml --list-tasks``
 
 
-The step option
-===============
+The task options
+================
 
-"one-step-at-a-time: confirm each task before running"
-ansible-playbook playbook.yml --step
+.. class:: fragment current-visible collapsable-fragment
+
+  **To start your playbook at a task (by name):**
+  ``ansible-playbook playbook.yml --start-at-task="task1"``
+
+.. class:: fragment current-visible collapsable-fragment
+
+  **To perform a syntax check on your playbook:**
+  ``ansible-playbook playbook.yml --syntax-check``
+
+.. class:: fragment current-visible collapsable-fragment
+
+  **To step though the tasks in your playbook:**
+
+  ``ansible-playbook playbook.yml --step``
+
+.. class:: notes
+
+    step prompts for confirmation before running a task
+
+
+The ansible command
+===================
+
+``ansible php --sudo --ask-sudo-pass -m shell -a "ufw status verbose"``
+
+The playbook
+============
+
+
+**Include tasks from another file:**
+``  - include: tasks/more_tasks.yml``
+Be sure to only include a list of tasks. It is not another playbook. But it also requires a document separator ``---``
+
+You can even go so far as to include variables:
+``  - include: tasks/more_tasks.yml var1=testing``
+
+
+Heavy Shell Action
+==================
+
+.. code:: yaml
+  - name: local action math
+    local_action: shell {{ IPOctet }}=$(echo {{ ServerIPRange|int }}/{{ epcrange|int }}+{{ IPOctet|int }}" | bc)
+    with_sequence: start=1 end=4
+    register: result
+    ignore_errors: yes
+
+You can iterate over these results using result.stdout_lines:
+
+- name: iterate results
+  local_action: debug msg={{item}}
+  with_items: result.stdout_lines
+
+http://stackoverflow.com/a/25452182
+
+Dynamic Inventory
+=================
+
+http://docs.ansible.com/ansible/intro_dynamic_inventory.html
+
+Modules
+=======
+
+----
+
+Core Modules
+------------
+http://docs.ansible.com/ansible/debug_module.html
+Prints statements during execution, which can include variables.
+``  - debug: msg="System {{ inventory_hostname }}``
 
 
 
+Formatting 3 Ways
+=================
+
+  - name: Copy Phergie shell script into place.
+    template: src="templates/phergie.sh.j2" dest="/home/{{ phergie_user }}/phergie.sh" owner="{{ phergie_user }}" group="{{ phergie_user }}" mode=0755
+
+  - name: Copy Phergie shell script into place.
+    template:
+      src: "templates/phergie.sh.j2"
+      dest: "/home/{{ phergie_user }}/phergie.sh"
+      owner: "{{ phergie_user }}"
+      group: "{{ phergie_user }}"
+      mode: 0755
+
+  - name: Copy Phergie shell script into place.
+    template: >
+      src="templates/phergie.sh.j2"
+      dest="/home/{{ phergie_user }}/phergie.sh"
+      wner="{{ phergie_user }}"
+      roup="{{ phergie_user }}"
+      mode=0755
+
+.. class:: notes
+  The last way can actually be used with anything that needs to wrap.
+
+https://servercheck.in/blog/yaml-best-practices-ansible-playbooks-tasks
+
+Recursive Syntax Checking
+=========================
+
+find ./playbooks -name '*.yml' -depth 1 | xargs -n1  ansible-playbook --syntax-check --list-tasks -i tests/ansible_hosts
+
+https://raymii.org/s/tutorials/Ansible_-_Playbook_Testing.html
 
 
+COWSAY Easter Egg
+=================
+If cowsay is installed, Ansible takes it upon itself to make your day happier when running playbooks. If you decide that you would like to work in a professional cow-free environment, you can either uninstall cowsay, or set an environment variable:
+
+export ANSIBLE_NOCOWS=1
+
+https://support.ansible.com/hc/en-us/articles/201957877-How-do-I-disable-cowsay-
 
 
 
