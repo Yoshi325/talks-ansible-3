@@ -1,4 +1,4 @@
 {
-  "cmd": "bash build.sh",
+  "cmd": "./build.sh",
   "keymap": "cmd-shift-b"
 }

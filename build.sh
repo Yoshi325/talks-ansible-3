@@ -37,6 +37,7 @@ convert_to_presentation()
                     .reveal .slides section .fragment.current-visible.collapsable-fragment { display: none; } \
                     h1.subtitle { font-size: 2em; } \
                     .code { text-align: left; } \
+                    .reveal .small-code { font-size: 30px; } \
                     .reveal dd > p { margin: 0; } \
                     figure, img { border:none !important; outline: none !important; } \
                 </style>  \

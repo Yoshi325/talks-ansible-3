@@ -1,5 +1,5 @@
 ===========
-Ansible (3)
+Ansible 300
 ===========
 
 -------------------------
@@ -7,8 +7,9 @@ Getting in over our heads
 -------------------------
 
 :Author: Charles L. Yost
-:Date: 2015-11
+:Date: 2015-12
 
+.. role:: small-code(code)
 ----
 
 Description
@@ -32,6 +33,12 @@ GitHub: Yoshi325
 
 | This Talk:
 | https://github.com/Yoshi325/talks-ansible-3
+
+
+Disclosure
+==========
+
+This talk is full of examples. I did not create them. I found them while researching. Proper credit for them can be found at the end in the "Credits" section.
 
 
 "Watch that first step, it's a doozy!"
@@ -67,24 +74,24 @@ The tags option
 .. class:: fragment current-visible collapsable-fragment
 
   **For overriding tag selection: always**
-  ``ansible-playbook playbook.yml --tags "always"``
+  :small-code:`ansible-playbook playbook.yml --tags "always"`
 
 .. class:: fragment current-visible collapsable-fragment
 
   **For selecting via meta:  ‘tagged’, ‘untagged’ and ‘all’**
-  ``ansible-playbook playbook.yml --tags "tagged"``
-  ``ansible-playbook playbook.yml --tags "untagged"``
-  ``ansible-playbook playbook.yml --tags "all"``
+  :small-code:`ansible-playbook playbook.yml --tags "tagged"`
+  :small-code:`ansible-playbook playbook.yml --tags "untagged"`
+  :small-code:`ansible-playbook playbook.yml --tags "all"`
 
 .. class:: fragment current-visible collapsable-fragment
 
   **For including multiple tags:**
-  ``ansible-playbook playbook.yml --tags "tag1,tag2"``
+  :small-code:`ansible-playbook playbook.yml --tags "tag1,tag2"`
 
 .. class:: fragment current-visible collapsable-fragment
 
   **For excluding tags:**
-  ``ansible-playbook playbook.yml --skip-tags=tag3``
+  :small-code:`ansible-playbook playbook.yml --skip-tags=tag3`
 
 
 The list options
@@ -116,12 +123,12 @@ The task options
 .. class:: fragment current-visible collapsable-fragment
 
   **To start your playbook at a task (by name):**
-  ``ansible-playbook playbook.yml --start-at-task="task1"``
+  :small-code:`ansible-playbook playbook.yml --start-at-task="task1"`
 
 .. class:: fragment current-visible collapsable-fragment
 
   **To perform a syntax check on your playbook:**
-  ``ansible-playbook playbook.yml --syntax-check``
+  :small-code:`ansible-playbook playbook.yml --syntax-check`
 
 .. class:: fragment current-visible collapsable-fragment
 
@@ -137,42 +144,194 @@ The task options
 The ansible command
 ===================
 
-``ansible php --sudo --ask-sudo-pass -m shell -a "ufw status verbose"``
+.. code::
+
+  ansible host-pattern   \
+  --sudo --ask-sudo-pass \
+  --module-name shell    \
+  --args="ufw status verbose"
+
 
 The playbook
 ============
 
+**Include tasks from another file**
 
-**Include tasks from another file:**
-``  - include: tasks/more_tasks.yml``
-Be sure to only include a list of tasks. It is not another playbook. But it also requires a document separator ``---``
+.. class:: fragment current-visible collapsable-fragment
 
-You can even go so far as to include variables:
-``  - include: tasks/more_tasks.yml var1=testing``
+  ``  - include: tasks/more_tasks.yml``
+
+.. class:: fragment current-visible collapsable-fragment
+
+  | Be sure to only include a list of tasks.
+  | It is not another playbook.
+  | But it also requires a document separator ``---``.
+
+.. class:: fragment current-visible collapsable-fragment
+
+  You can even go so far as to include variables:
+
+  :small-code:`- include: tasks/more_tasks.yml var1=testing`
+
+
+Formatting 3 Ways
+=================
+
+.. class:: fragment current-visible collapsable-fragment
+
+  .. code::
+
+    - name: Copy Phergie shell script into place.
+      template: src="templates/phergie.sh.j2" dest="/home/{{ phergie_user }}/phergie.sh" owner="{{ phergie_user }}" group="{{ phergie_user }}" mode=0755
+
+.. class:: fragment current-visible collapsable-fragment
+
+  .. code::
+
+    - name: Copy Phergie shell script into place.
+      template:
+        src: "templates/phergie.sh.j2"
+        dest: "/home/{{ phergie_user }}/phergie.sh"
+        owner: "{{ phergie_user }}"
+        group: "{{ phergie_user }}"
+        mode: 0755
+
+.. class:: fragment current-visible collapsable-fragment
+
+  .. code::
+
+    - name: Copy Phergie shell script into place.
+      template: >
+        src="templates/phergie.sh.j2"
+        dest="/home/{{ phergie_user }}/phergie.sh"
+        wner="{{ phergie_user }}"
+        roup="{{ phergie_user }}"
+        mode=0755
+
+.. class:: notes
+
+  The last way can actually be used with anything that needs to wrap.
+
+----
+
+
+Recursive Syntax Checking
+-------------------------
+
+.. code::
+
+  find ./playbooks -name '*.yml' -depth 1 \
+  | xargs -n1                             \
+      ansible-playbook                    \
+          --syntax-check                  \
+          --list-tasks                    \
+          -i tests/ansible_hosts
+
+----
 
 
 Heavy Shell Action
 ==================
 
-.. code:: yaml
-  - name: local action math
-    local_action: shell {{ IPOctet }}=$(echo {{ ServerIPRange|int }}/{{ epcrange|int }}+{{ IPOctet|int }}" | bc)
-    with_sequence: start=1 end=4
-    register: result
-    ignore_errors: yes
+.. class:: fragment current-visible collapsable-fragment
 
-You can iterate over these results using result.stdout_lines:
+  .. code::
 
-- name: iterate results
-  local_action: debug msg={{item}}
-  with_items: result.stdout_lines
+    - name: local action math
+      local_action: >
+        shell {{ IPOctet }}=$(
+        echo "{{ ServerIPRange|int }}
+        /{{ epcrange|int }}
+        +{{ IPOctet|int }}"
+        | bc
+        )
+      with_sequence: start=1 end=4
+      register: result
+      ignore_errors: yes
 
-http://stackoverflow.com/a/25452182
+.. class:: fragment current-visible collapsable-fragment
+
+  You can iterate over these results using result.stdout_lines:
+
+  .. code::
+
+    - name: iterate results
+      local_action: debug msg={{item}}
+      with_items: result.stdout_lines
+
+----
+
+
+Lining them up,
+---------------
+and knocking them down
+----------------------
+
+.. code::
+
+  - name: set PHP-FPM parameters
+    lineinfile:
+      dest: /etc/php-fpm.conf
+      regexp: "^{{ item.param }}"
+      insertafter: "^;{{ item.param }}"
+      line: "{{ item.param }} = {{ item.value }}"
+    with_items:
+      - { param: 'error_log', value: '/var/log/php-fpm/error.log' }
+      - { param: 'log_level', value: 'error' }
+      - { param: 'emergency_restart_threshold', value: '10' }
+
+----
+
 
 Dynamic Inventory
 =================
 
-http://docs.ansible.com/ansible/intro_dynamic_inventory.html
+.. class:: fragment current-visible collapsable-fragment
+
+  Dynamic Inventory allows you to pass a script into Ansible's commands, which it uses to obtain a json blob with the inventory.
+
+.. class:: fragment current-visible collapsable-fragment
+
+  Scripts are provided for:
+
+  +-----------------------+-----------------------+
+  | Cobbler               | Amazon EC2            |
+  | BSD Jails             | DigitalOcean          |
+  | Google Compute Engine | Linode                |
+  | OpenShift             | OpenStack Nova        |
+  | Red Hat's SpaceWalk   | Vagrant               |
+  | Zabbix                |                       |
+  +-----------------------+-----------------------+
+
+.. class:: fragment current-visible collapsable-fragment
+
+  | But you can write one yourself.
+  | Say to pull from Active Directory.
+
+.. class:: fragment current-visible collapsable-fragment
+
+  The output of your script needs to look like this:
+
+  .. code:: json
+
+    {
+    "webservers"  : [ "host2.example.com", "host3.example.com" ],
+    "databases"   : {
+        "hosts"   : [ "host1.example.com", "host2.example.com" ],
+         "vars"   : {
+            "a"   : true
+        }
+    },
+    "atlanta"     : {
+        "hosts"   : [ "host1.example.com", "host4.example.com"],
+        "vars"    : {
+            "b"   : false
+        },
+        "children": [ "marietta", "5points" ]
+    },
+    "marietta"    : [ "host6.example.com" ],
+    "5points"     : [ "host7.example.com" ]
+    }
 
 Modules
 =======
@@ -181,45 +340,45 @@ Modules
 
 Core Modules
 ------------
-http://docs.ansible.com/ansible/debug_module.html
-Prints statements during execution, which can include variables.
-``  - debug: msg="System {{ inventory_hostname }}``
 
+.. class:: fragment current-visible collapsable-fragment
 
+  | The debug module print statements during execution,
+  | which can include variables.
 
-Formatting 3 Ways
-=================
+  ``  - debug: msg="System {{ inventory_hostname }}``
 
-  - name: Copy Phergie shell script into place.
-    template: src="templates/phergie.sh.j2" dest="/home/{{ phergie_user }}/phergie.sh" owner="{{ phergie_user }}" group="{{ phergie_user }}" mode=0755
+.. class:: fragment current-visible collapsable-fragment
 
-  - name: Copy Phergie shell script into place.
-    template:
-      src: "templates/phergie.sh.j2"
-      dest: "/home/{{ phergie_user }}/phergie.sh"
-      owner: "{{ phergie_user }}"
-      group: "{{ phergie_user }}"
-      mode: 0755
+  | The accelerate module can increase
+  | communication throughput to clients.
+  | (Communications are still encrypted.)
+  | It is used by adding the following to an ansible play:
 
-  - name: Copy Phergie shell script into place.
-    template: >
-      src="templates/phergie.sh.j2"
-      dest="/home/{{ phergie_user }}/phergie.sh"
-      wner="{{ phergie_user }}"
-      roup="{{ phergie_user }}"
-      mode=0755
+  ``accelrate: true``
 
-.. class:: notes
-  The last way can actually be used with anything that needs to wrap.
+.. class:: fragment current-visible collapsable-fragment
 
-https://servercheck.in/blog/yaml-best-practices-ansible-playbooks-tasks
+  | The fail module abandons the progress with a custom message.
+  | It is most useful when combined with "when"
 
-Recursive Syntax Checking
-=========================
+  .. code::
 
-find ./playbooks -name '*.yml' -depth 1 | xargs -n1  ansible-playbook --syntax-check --list-tasks -i tests/ansible_hosts
+      - fail: msg="The system may not be provisioned."
+        when: cmdb_status != "to-be-staged"
 
-https://raymii.org/s/tutorials/Ansible_-_Playbook_Testing.html
+.. class:: fragment current-visible collapsable-fragment
+
+  | The pause module temporarily stops exectuion of a playbook.
+  | It can require an amount of time passing, or user input.
+
+  .. code::
+
+      # Time Based:
+      - pause: minutes=5
+      - pause: seconds=30
+      # User Input:
+      - pause: prompt="Check fo org.foo.FooOverload exception"
 
 
 COWSAY Easter Egg
@@ -235,6 +394,16 @@ https://support.ansible.com/hc/en-us/articles/201957877-How-do-I-disable-cowsay-
 Resources and Credits
 =====================
 
-https://gist.github.com/marktheunissen/2979474
-http://stackoverflow.com/questions/23945201/how-to-run-only-one-task-in-ansible-playbook
-http://docs.ansible.com/ansible/playbooks_tags.html
+- https://gist.github.com/marktheunissen/2979474
+- http://stackoverflow.com/questions/23945201/how-to-run-only-one-task-in-ansible-playbook
+- http://docs.ansible.com/ansible/playbooks_tags.html
+- http://stackoverflow.com/a/25452182
+- http://sparanoid.com/note/ansible-advanced-lineinfile/
+- https://servercheck.in/blog/yaml-best-practices-ansible-playbooks-tasks
+- https://raymii.org/s/tutorials/Ansible_-_Playbook_Testing.html
+- http://docs.ansible.com/ansible/intro_dynamic_inventory.html
+- http://docs.ansible.com/ansible/developing_inventory.html
+- http://docs.ansible.com/ansible/debug_module.html
+- http://docs.ansible.com/ansible/accelerate_module.html
+- http://docs.ansible.com/ansible/fail_module.html
+- http://docs.ansible.com/ansible/pause_module.html
