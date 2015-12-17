@@ -9,8 +9,8 @@ Getting in over our heads
 :Author: Charles L. Yost
 :Date: 2015-12
 
-.. role:: small-code(code)
 ----
+
 
 Description
 ===========
@@ -45,6 +45,7 @@ This talk is full of examples. I did not create them. I found them while researc
 ======================================
 
 .. figure:: images/66C538AB-7D9C-4791-99D8-F359978DBABD.jpg
+.. role:: small-code(code)
 
 
 The ansible-playbook command
@@ -204,8 +205,8 @@ Formatting 3 Ways
       template: >
         src="templates/phergie.sh.j2"
         dest="/home/{{ phergie_user }}/phergie.sh"
-        wner="{{ phergie_user }}"
-        roup="{{ phergie_user }}"
+        owner="{{ phergie_user }}"
+        group="{{ phergie_user }}"
         mode=0755
 
 .. class:: notes
@@ -355,11 +356,12 @@ Core Modules
   | (Communications are still encrypted.)
   | It is used by adding the following to an ansible play:
 
-  ``accelrate: true``
+  ``accelerate: true``
 
 .. class:: fragment current-visible collapsable-fragment
 
-  | The fail module abandons the progress with a custom message.
+  | The fail module abandons the progress
+  | with a custom message.
   | It is most useful when combined with "when"
 
   .. code::
@@ -378,17 +380,16 @@ Core Modules
       - pause: minutes=5
       - pause: seconds=30
       # User Input:
-      - pause: prompt="Check fo org.foo.FooOverload exception"
+      - pause: prompt="Check for org.foo.FooOverload exception"
 
+
+.. ToDo: More non-Core Modules.
 
 COWSAY Easter Egg
 =================
 If cowsay is installed, Ansible takes it upon itself to make your day happier when running playbooks. If you decide that you would like to work in a professional cow-free environment, you can either uninstall cowsay, or set an environment variable:
 
 export ANSIBLE_NOCOWS=1
-
-https://support.ansible.com/hc/en-us/articles/201957877-How-do-I-disable-cowsay-
-
 
 
 Resources and Credits
@@ -407,3 +408,4 @@ Resources and Credits
 - http://docs.ansible.com/ansible/accelerate_module.html
 - http://docs.ansible.com/ansible/fail_module.html
 - http://docs.ansible.com/ansible/pause_module.html
+- https://support.ansible.com/hc/en-us/articles/201957877-How-do-I-disable-cowsay-

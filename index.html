@@ -67,6 +67,7 @@
 h1.subtitle { font-size: 2em; } 
 .code { text-align: left; } 
 .reveal .small-code { font-size: 30px; } 
+.slides > section > h1.subtitle { font-size: 1.9em; } 
 .reveal dd > p { margin: 0; } 
 figure, img { border:none !important; outline: none !important; } 
 </style>  
@@ -80,7 +81,6 @@ figure, img { border:none !important; outline: none !important; }
                 <h2 class="author">Charles L. Yost</h2>
                 <h3 class="date">2015-12</h3>
             </section>
-            <section class="slide level1"></section>
             <section id="description" class="slide level1">
                 <h1>Description</h1>
                 <p>A 45 minute deep dive into Ansible. The inner workings, all the possiblities, and how to really get into some trouble with it. Jam-packed with examples, this talk is intended to be a living cookbook/cheatsheet for when Ansible has you over a barrel, or it's your turn in one.</p>
@@ -209,8 +209,8 @@ figure, img { border:none !important; outline: none !important; }
   template: &gt;
     src="templates/phergie.sh.j2"
     dest="/home/{{ phergie_user }}/phergie.sh"
-    wner="{{ phergie_user }}"
-    roup="{{ phergie_user }}"
+    owner="{{ phergie_user }}"
+    group="{{ phergie_user }}"
     mode=0755</code></pre>
                 </div>
                 <aside class="notes">
@@ -325,10 +325,11 @@ figure, img { border:none !important; outline: none !important; }
                     communication throughput to clients.<br>
                     (Communications are still encrypted.)<br>
                     It is used by adding the following to an ansible play:</p>
-                    <p><code>accelrate: true</code></p>
+                    <p><code>accelerate: true</code></p>
                 </div>
                 <div class="fragment current-visible collapsable-fragment">
-                    <p>The fail module abandons the progress with a custom message.<br>
+                    <p>The fail module abandons the progress<br>
+                    with a custom message.<br>
                     It is most useful when combined with "when"</p>
                     <pre class="sourceCode"><code>- fail: msg="The system may not be provisioned."
   when: cmdb_status != "to-be-staged"</code></pre>
@@ -340,14 +341,13 @@ figure, img { border:none !important; outline: none !important; }
 - pause: minutes=5
 - pause: seconds=30
 # User Input:
-- pause: prompt="Check fo org.foo.FooOverload exception"</code></pre>
+- pause: prompt="Check for org.foo.FooOverload exception"</code></pre>
                 </div>
             </section>
             <section id="cowsay-easter-egg" class="slide level1">
                 <h1>COWSAY Easter Egg</h1>
                 <p>If cowsay is installed, Ansible takes it upon itself to make your day happier when running playbooks. If you decide that you would like to work in a professional cow-free environment, you can either uninstall cowsay, or set an environment variable:</p>
                 <p>export ANSIBLE_NOCOWS=1</p>
-                <p><a href="https://support.ansible.com/hc/en-us/articles/201957877-How-do-I-disable-cowsay-" class="uri">https://support.ansible.com/hc/en-us/articles/201957877-How-do-I-disable-cowsay-</a></p>
             </section>
             <section id="resources-and-credits" class="slide level1">
                 <h1>Resources and Credits</h1>
@@ -390,6 +390,9 @@ figure, img { border:none !important; outline: none !important; }
                     </li>
                     <li>
                         <a href="http://docs.ansible.com/ansible/pause_module.html" class="uri">http://docs.ansible.com/ansible/pause_module.html</a>
+                    </li>
+                    <li>
+                        <a href="https://support.ansible.com/hc/en-us/articles/201957877-How-do-I-disable-cowsay-" class="uri">https://support.ansible.com/hc/en-us/articles/201957877-How-do-I-disable-cowsay-</a>
                     </li>
                 </ul>
             </section>

@@ -38,6 +38,7 @@ convert_to_presentation()
                     h1.subtitle { font-size: 2em; } \
                     .code { text-align: left; } \
                     .reveal .small-code { font-size: 30px; } \
+                    .slides > section > h1.subtitle { font-size: 1.9em; } \
                     .reveal dd > p { margin: 0; } \
                     figure, img { border:none !important; outline: none !important; } \
                 </style>  \
